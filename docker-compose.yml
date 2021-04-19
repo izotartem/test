@@ -1,0 +1,45 @@
+version: '3'
+services:
+
+  php:
+    build:
+      context: .
+      dockerfile: docker/php/Dockerfile
+    tty: true
+    volumes:
+      - ./:/var/www/test
+      - ./docker/php/local.ini:/usr/local/etc/php/conf.d/local.ini
+    networks:
+      - app-network
+
+  nginx:
+    image: nginx:alpine
+    tty: true
+    ports:
+      - "80:80"
+      - "443:443"
+    volumes:
+      - ./:/var/www/test
+      - ./docker/nginx/:/etc/nginx/conf.d/
+    networks:
+      - app-network
+
+  db:
+    image: postgres:latest
+    ports:
+      - 5432:5432
+    environment:
+      - POSTGRES_USER=${DB_USERNAME}
+      - POSTGRES_PASSWORD=${DB_PASSWORD}
+      - POSTGRES_DB=${DB_DATABASE}
+    volumes:
+      - dbdata:/var/lib/postgresql/data
+    networks:
+      - app-network
+
+networks:
+  app-network:
+    driver: bridge
+volumes:
+  dbdata:
+    driver: local
