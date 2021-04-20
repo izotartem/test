@@ -7,16 +7,16 @@ use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsToMany;
 use Illuminate\Database\Eloquent\Relations\MorphToMany;
 
-class Image extends Model
+class Tag extends Model
 {
     use HasFactory;
 
     protected $fillable = [
-        'title', 'path'
+        'name'
     ];
 
-    public function tags(): BelongsToMany
+    public function image(): BelongsToMany
     {
-        return $this->belongsToMany(Tag::class, 'image_tag');
+        return $this->belongsToMany(Image::class, 'image_tag');
     }
 }
